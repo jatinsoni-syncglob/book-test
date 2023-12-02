@@ -1,0 +1,34 @@
+version: '3.9'
+services:
+  apiserver:
+    container_name: BookStore
+    
+    image: rpa/bookstore
+    build: 
+      context: ./server
+      target: "${NODE_ENV}"
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      - DB_TYPE=postgres
+      - PG_USER=root
+      - PG_PASSWORD=123456
+      - PG_DB=book_store
+      - PG_PORT=5432
+      - PG_HOST=pgdb
+    depends_on:
+      - pgdb
+  pgdb:
+    container_name: pgdb
+    image: postgres:12
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: book_store
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata: {}
